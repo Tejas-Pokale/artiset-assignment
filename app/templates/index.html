@@ -1,21 +1,166 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
     <title>Base64 Encoder / Decoder</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', sans-serif;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #0f172a, #1e293b);
+            color: #fff;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            padding: 40px;
+            border-radius: 16px;
+            width: 400px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            border-radius: 8px;
+            border: none;
+            outline: none;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        button {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s ease;
+        }
+
+        .encrypt {
+            background: #3b82f6;
+            color: white;
+        }
+
+        .encrypt:hover {
+            background: #2563eb;
+        }
+
+        .decrypt {
+            background: #10b981;
+            color: white;
+        }
+
+        .decrypt:hover {
+            background: #059669;
+        }
+
+        dialog {
+            border: none;
+            border-radius: 12px;
+            padding: 20px;
+            width: 400px;
+            background: #1e293b;
+            color: white;
+        }
+
+        dialog::backdrop {
+            background: rgba(0, 0, 0, 0.6);
+        }
+
+        .dialog-content {
+            word-wrap: break-word;
+            margin-bottom: 15px;
+        }
+
+        .close-btn {
+            background: #ef4444;
+            padding: 8px 12px;
+            border-radius: 6px;
+            border: none;
+            color: white;
+            cursor: pointer;
+        }
+    </style>
 </head>
 <body>
+
+<div class="card">
     <h2>Base64 Encoder / Decoder</h2>
 
-    <form action="/encrypt" method="post">
-        <input type="text" name="message" placeholder="Enter message" required>
-        <button type="submit">Encrypt</button>
-    </form>
+    <input type="text" id="message" placeholder="Enter your message">
 
-    <br>
+    <div class="buttons">
+        <button class="encrypt" onclick="handleAction('encrypt')">Encrypt</button>
+        <button class="decrypt" onclick="handleAction('decrypt')">Decrypt</button>
+    </div>
+</div>
 
-    <form action="/decrypt" method="post">
-        <input type="text" name="message" placeholder="Enter Base64 text" required>
-        <button type="submit">Decrypt</button>
-    </form>
+<dialog id="resultDialog">
+    <div class="dialog-content" id="dialogContent"></div>
+    <button class="close-btn" onclick="closeDialog()">Close</button>
+</dialog>
+
+<script>
+    async function handleAction(action) {
+        const message = document.getElementById("message").value;
+
+        if (!message) {
+            showDialog("Please enter a message.");
+            return;
+        }
+
+        const formData = new FormData();
+        formData.append("message", message);
+
+        try {
+            const response = await fetch(`/${action}`, {
+                method: "POST",
+                body: formData
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                showDialog(data.result);
+            } else {
+                showDialog(data.error || "Something went wrong.");
+            }
+
+        } catch (error) {
+            showDialog("Server error occurred.");
+        }
+    }
+
+    function showDialog(text) {
+        const dialog = document.getElementById("resultDialog");
+        document.getElementById("dialogContent").innerText = text;
+        dialog.showModal();
+    }
+
+    function closeDialog() {
+        document.getElementById("resultDialog").close();
+    }
+</script>
+
 </body>
 </html>
