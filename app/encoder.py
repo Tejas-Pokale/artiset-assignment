@@ -1,6 +1,5 @@
 import base64
 
-
 def encode_message(message: str) -> str:
     encoded_bytes = base64.b64encode(message.encode("utf-8"))
     return encoded_bytes.decode("utf-8")
