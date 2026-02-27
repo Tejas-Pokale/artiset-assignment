@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Base64 Encoder / Decoder</title>
+</head>
+<body>
+    <h2>Base64 Encoder / Decoder</h2>
+
+    <form action="/encrypt" method="post">
+        <input type="text" name="message" placeholder="Enter message" required>
+        <button type="submit">Encrypt</button>
+    </form>
+
+    <br>
+
+    <form action="/decrypt" method="post">
+        <input type="text" name="message" placeholder="Enter Base64 text" required>
+        <button type="submit">Decrypt</button>
+    </form>
+</body>
+</html>
